@@ -12,27 +12,12 @@ app.use(express.urlencoded({ extended: true }));
 const upload = multer();
 app.use(upload.none());
 
-app.get("/", (req, res) => {
-  const query = "SELECT * FROM user_action_statistic";
-  db.execute(query)
-    .then((result) => {
-      res
-        .status(200)
-        .json(
-          new GetResponse("success", "Lấy thông tin thành công!", result.rows)
-        );
-    })
-    .catch((error) => {
-      console.log(error);
-      res.send("Hello World!");
-    });
-});
-
+// thêm hành động của người dùng
 app.post("/user/action", async (req, res) => {
   try {
-    const { device_name, action_name, created_at } = req.body;
+    const { device_name, action_name } = req.body;
     if (device_name && action_name) {
-      // var created_at = new Date().toISOString().split('T')[0];
+      var created_at = new Date().toISOString().split('T')[0];
 
       await db.execute(
         "UPDATE user_action_statistic SET count = count + 1 WHERE device_name = ? AND action_name = ? AND created_at = ?",
