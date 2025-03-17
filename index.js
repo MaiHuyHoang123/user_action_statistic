@@ -3,16 +3,21 @@ import db from "./db/config.js";
 import { PostResponse, GetResponse } from "./response/response.js";
 import multer from "multer";
 import { fillMissingDates, formatData } from "./utils/helper.js";
+import dotenv from "dotenv"
 
 const app = express();
-const port = 3002;
+dotenv.config();
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const upload = multer();
 app.use(upload.none());
 
-// thêm hành động của người dùng
+// api lưu lại hành động của người dùng
+// @param
+// device_name string (thiết bị thực hiện thao tác)
+// action_name string (tên hành động)
 app.post("/user/action", async (req, res) => {
   try {
     const { device_name, action_name } = req.body;
@@ -39,6 +44,11 @@ app.post("/user/action", async (req, res) => {
   }
 });
 
+// api lấy thống kê theo hành động của người dùng
+// @param
+// start_date string(YYYY-MM-DD) (ngày bắt đầu lấy số liệu)
+// end_date string(YYYY-MM-DD) (ngày cuối cùng lấy số liệu)
+// action_name string (tên hành động cần thống kê)
 app.get("/user/action/statistic", async (req, res) => {
   try {
     const { start_date, end_date, action_name } = req.query;
@@ -66,6 +76,13 @@ app.get("/user/action/statistic", async (req, res) => {
   }
 });
 
+
+// api lấy thống kê theo thiết bị và hành động của người dùng
+// @param
+// start_date string(YYYY-MM-DD) (ngày bắt đầu lấy số liệu)
+// end_date string(YYYY-MM-DD) (ngày cuối cùng lấy số liệu)
+// device_name string (tên thiết bị cần thống kê)
+// action_name string (tên hành động cần thống kê)
 app.get("/user/device/statistic", async (req, res) => {
   try {
     const { start_date, end_date, device_name, action_name } = req.query;
@@ -96,6 +113,7 @@ app.get("/user/device/statistic", async (req, res) => {
   }
 });
 
+// lấy danh sách thiết bị
 app.get("/device/list", async (req, res) => {
   try {
     const query = "select * from device";
@@ -114,6 +132,7 @@ app.get("/device/list", async (req, res) => {
   }
 });
 
+// lấy danh sách hành động
 app.get("/action/list", async (req, res) => {
   try {
     const query = "select * from action";

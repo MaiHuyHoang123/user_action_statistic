@@ -1,4 +1,7 @@
 import cassandra from "cassandra-driver"
+import dotenv from "dotenv"
+dotenv.config();
+
 const db = new cassandra.Client({
   contactPoints: [process.env.DB_HOST],
   localDataCenter: process.env.DATACENTER,
